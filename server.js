@@ -1,5 +1,5 @@
 const app = require('./app');
-const { contactsDB } = require('./src/database/contactsDB');
+const { contactsDB } = require('./src/models/contacts');
 require('dotenv').config();
 
 const port = process.env.PORT ?? 3000;
