@@ -1,45 +1,10 @@
-const mongoose = require('mongoose');
-require('dotenv').config();
-
 const createError = require('../services/createError');
 const errorProcessor = require('../services/errorProcessor');
+const Contact = require('./contactModels');
 
 const listContacts = async () => {
   return await Contact.find({});
 };
-
-const conectionString = process.env.MONGOURI;
-
-const contactsDB = async () => {
-  try {
-    mongoose.set('strictQuery', false);
-    const connection = await mongoose.connect(conectionString);
-    console.log('Database connection successful');
-    return connection;
-  } catch (error) {
-    console.log(error);
-    process.exit(1);
-  }
-};
-
-const contactsSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Set name for contact'],
-  },
-  email: {
-    type: String,
-    // unique: [true, 'Email it`s unique field'],
-  },
-  phone: {
-    type: String,
-  },
-  favorite: {
-    type: Boolean,
-    default: false,
-  },
-});
-const Contact = mongoose.model('contacts', contactsSchema);
 
 const addContact = async body => {
   try {
@@ -90,5 +55,4 @@ module.exports = {
   removeContact,
   addContact,
   updateContact,
-  contactsDB,
 };
