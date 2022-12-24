@@ -7,12 +7,15 @@ const {
   updateContactController,
   patchContactStatusController,
 } = require('../../controllers/contactsController');
+const authMiddleware = require('../../middlewares/authMiddleware');
 const {
   updateValidationMidleware,
   createValidationMidleware,
-} = require('../../middlewares/validationMiddleware');
+} = require('../../middlewares/fieldsValidationMiddleware');
 
 const router = express.Router();
+
+router.use(authMiddleware);
 
 router.get('/', getContactsController);
 router.post('/', createValidationMidleware, addContactController);
