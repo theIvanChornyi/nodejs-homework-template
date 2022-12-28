@@ -77,7 +77,7 @@ const changeSubscriptionController = async (req, res, next) => {
     const { subscription } = req.body;
     const subscriptionTypes = ['starter', 'pro', 'business'];
     const isValid = subscriptionTypes.some(sub => sub === subscription);
-    if (!isValid) throw createError(401, 'Subscribe type is wrong');
+    if (!isValid) throw createError(400, 'Subscribe type is wrong');
 
     const { email } = await User.findByIdAndUpdate({ _id }, { subscription });
 
