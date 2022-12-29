@@ -18,8 +18,6 @@ const getContactsController = async (req, res, next) => {
       ? (queryOptions.skip = (+page - 1) * queryOptions.limit)
       : (queryOptions.skip = 0);
 
-    console.log('queryOptions', queryOptions);
-
     const filter = { owner };
 
     if (favorite === 'true') {
