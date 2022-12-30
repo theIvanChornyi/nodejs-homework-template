@@ -25,7 +25,6 @@ describe('test auth routes', () => {
   test('test right login route', async () => {
     const newUser = {
       email: 'test@gmail.com',
-      name: 'test',
       avatarURL: 'testavatar',
       password: 'testpassword',
     };
