@@ -7,20 +7,32 @@ const getContactsController = async (req, res, next) => {
   try {
     const { _id: owner } = req.user;
     const { page, limit, favorite } = req.query;
+    const normalLimit = +limit;
 
     const queryOptions = { skip: 0, limit: 20 };
-    queryOptions.limit = +limit;
-    +page < 1
-      ? (queryOptions.skip = 0)
-      : (queryOptions.skip = (+page - 1) * queryOptions.limit);
+
+    if (normalLimit > 0 && normalLimit <= 100) {
+      queryOptions.limit = normalLimit;
+    }
+    +page > 1
+      ? (queryOptions.skip = (+page - 1) * queryOptions.limit)
+      : (queryOptions.skip = 0);
 
     const filter = { owner };
-    if (favorite !== undefined) filter.favorite = favorite;
 
-    const querry = Contact.find(filter, '', queryOptions);
-    const data = await querry.populate('owner', 'name email');
+    if (favorite === 'true') {
+      filter.favorite = true;
+    } else if (favorite === 'false') {
+      filter.favorite = false;
+    }
+    const data = await Contact.find(filter, '', queryOptions).populate(
+      'owner',
+      'name email'
+    );
+    const amount = await Contact.find(filter).count();
+    const pagesAmount = Math.ceil(amount / queryOptions.limit);
 
-    return res.status(200).json(data);
+    return res.status(200).json({ data, pages: pagesAmount });
   } catch (error) {
     next(error);
   }

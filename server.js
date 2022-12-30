@@ -2,14 +2,14 @@ const { default: mongoose } = require('mongoose');
 const app = require('./app');
 require('dotenv').config();
 
-const port = process.env.PORT ?? 3000;
+const { PORT } = process.env ?? 3000;
 
-const conectionString = process.env.MONGOURI;
+const { MONGOURI } = process.env;
 
 const contactsDB = async () => {
   try {
     mongoose.set('strictQuery', false);
-    const connection = await mongoose.connect(conectionString);
+    const connection = await mongoose.connect(MONGOURI);
     console.log('Database connection successful');
     return connection;
   } catch (error) {
@@ -20,8 +20,8 @@ const contactsDB = async () => {
 
 const start = async () => {
   await contactsDB();
-  app.listen(port, () => {
-    console.log(`Server running. Use our API on port: ${port}`);
+  app.listen(PORT, () => {
+    console.log(`Server running. Use our API on port: ${PORT}`);
   });
 };
 
