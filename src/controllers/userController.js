@@ -105,8 +105,8 @@ const changeAvatarController = async (req, res, next) => {
     const avatarsDir = path.join(__dirname, '../', 'public', 'avatars');
     const fileName = `${_id}.${extention}`;
 
-    const image = await Jimp.read(req.file.path);
-    await image.resize(250, 250).write(req.file.path);
+    const image = await Jimp.read(tempDir);
+    await image.resize(250, 250).write(tempDir);
 
     await fs.rename(tempDir, `${avatarsDir}/${fileName}`);
 
