@@ -102,13 +102,19 @@ const changeAvatarController = async (req, res, next) => {
     const { _id } = req.user;
     const { path: tempDir, originalname } = req.file;
     const [extention] = originalname.split('.').reverse();
-    const avatarsDir = path.join(__dirname, '../', 'public', 'avatars');
     const fileName = `${_id}.${extention}`;
+    const avatarsDir = path.join(
+      __dirname,
+      '../',
+      'public',
+      'avatars',
+      fileName
+    );
 
     const image = await Jimp.read(tempDir);
     await image.resize(250, 250).write(tempDir);
 
-    await fs.rename(tempDir, `${avatarsDir}/${fileName}`);
+    await fs.rename(tempDir, avatarsDir);
 
     const { avatarURL } = await User.findByIdAndUpdate(
       _id,
