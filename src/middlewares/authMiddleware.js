@@ -1,4 +1,3 @@
-// require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const User = require('../models/usersModels');
 
@@ -21,7 +20,8 @@ const authMiddleware = async (req, res, next) => {
     try {
       const { userId } = jwt.verify(token, TOKEN_SALT);
 
-      const user = await User.findById(userId);
+      const user = await User.findOne({ _id: userId });
+
       if (!user || !user.token || user.token !== token) {
         {
           throw createError(401, 'Not authorized');
@@ -33,7 +33,12 @@ const authMiddleware = async (req, res, next) => {
         throw createError(401, 'Not authorized');
       }
     }
-
+    if (!req.user.verify) {
+      throw createError(
+        401,
+        `Please verify your account! Check your email address ${req.user.email}`
+      );
+    }
     next();
   } catch (error) {
     next(error);

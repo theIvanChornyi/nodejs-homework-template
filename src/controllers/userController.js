@@ -49,10 +49,16 @@ const loginController = async (req, res, next) => {
     if (!newUser) {
       throw createError(401, 'Email or password is wrong');
     }
+    if (!newUser.verify) {
+      throw createError(
+        401,
+        `Please verify your account! Check your email address ${email}`
+      );
+    }
 
     const match = await bcrypt.compare(password, newUser.password);
     if (!match) {
-      throw createError(401, 'Not your day');
+      throw createError(401, 'Wrong password');
     }
     const { subscription, _id: userId, avatarURL } = newUser;
     const token = jwt.sign({ userId }, TOKEN_SALT, { expiresIn: '1h' });
@@ -144,7 +150,7 @@ const verifyController = async (req, res, next) => {
     if (!user) {
       throw createError(404, 'User not found');
     }
-    user.verificationToken = '';
+    user.verificationToken = 'null';
     user.verify = true;
     await user.save();
     res.status(200).json({
