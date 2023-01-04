@@ -5,20 +5,27 @@ const gravatar = require('gravatar');
 const path = require('path');
 const fs = require('fs/promises');
 const Jimp = require('jimp');
+const { nanoid } = require('nanoid');
 
 const User = require('../models/usersModels');
 const createError = require('../services/createError');
+const sendVerivyMsg = require('../services/sendGridMail');
 
 const { TOKEN_SALT } = process.env;
 
 const signupController = async (req, res, next) => {
   const { password, email } = req.body;
   try {
+    const verificationToken = nanoid();
     await User.create({
       password,
       email,
       avatarURL: gravatar.url(email),
+      verificationToken,
     });
+
+    await sendVerivyMsg({ email, verificationToken });
+
     const newUser = await User.find(
       { email },
       { email: 1, subscription: 1, _id: 0, avatarURL: 1 }
@@ -84,7 +91,9 @@ const changeSubscriptionController = async (req, res, next) => {
     const { subscription } = req.body;
     const subscriptionTypes = ['starter', 'pro', 'business'];
     const isValid = subscriptionTypes.some(sub => sub === subscription);
-    if (!isValid) throw createError(400, 'Subscribe type is wrong');
+    if (!isValid) {
+      throw createError(400, 'Subscribe type is wrong');
+    }
 
     const { email, avatarURL } = await User.findByIdAndUpdate(
       { _id },
@@ -128,6 +137,45 @@ const changeAvatarController = async (req, res, next) => {
   }
 };
 
+const verifyController = async (req, res, next) => {
+  try {
+    const { verificationToken } = req.params;
+    const user = await User.findOne({ verificationToken, verify: false });
+    if (!user) {
+      throw createError(404, 'User not found');
+    }
+    user.verificationToken = '';
+    user.verify = true;
+    await user.save();
+    res.status(200).json({
+      message: 'Verification successful',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const repeatVerifyController = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      throw createError(404, 'User not found');
+    }
+    if (user.verify) {
+      throw createError(400, 'Verification has already been passed');
+    }
+
+    await sendVerivyMsg({ email, verificationToken: user.verificationToken });
+    res.status(200).json({
+      message: 'Verification email sent',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   signupController,
   loginController,
@@ -135,4 +183,6 @@ module.exports = {
   getCurrentUserController,
   changeSubscriptionController,
   changeAvatarController,
+  verifyController,
+  repeatVerifyController,
 };
