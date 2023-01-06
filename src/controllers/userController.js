@@ -150,9 +150,11 @@ const verifyController = async (req, res, next) => {
     if (!user) {
       throw createError(404, 'User not found');
     }
-    user.verificationToken = 'null';
-    user.verify = true;
-    await user.save();
+
+    await User.findOneAndUpdate(
+      { _id: user._id },
+      { verificationToken: null, verify: true }
+    );
     res.status(200).json({
       message: 'Verification successful',
     });
