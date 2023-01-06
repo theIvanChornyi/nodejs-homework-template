@@ -89,8 +89,9 @@ const getContactByIdController = async (req, res, next) => {
 const updateContactController = async (req, res, next) => {
   try {
     const { contactId: _id } = req.params;
-    const userRequest = await req.body;
+    const { email, name, phone } = await req.body;
     const { _id: owner } = req.user;
+    const userRequest = { email, name, phone };
     try {
       const contact = await Contact.findOneAndUpdate(
         { _id, owner },
