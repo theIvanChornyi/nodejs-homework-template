@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Contacts",
-    "description": "phone book rest API",
+    "description": "Phone book rest API",
     "version": "1"
   },
   "servers": [
@@ -13,6 +13,9 @@
   "paths": {
     "/users/signup": {
       "post": {
+        "tags": [
+          "User auth"
+        ],
         "summary": "Create new user.",
         "requestBody": {
           "content": {
@@ -76,6 +79,9 @@
     },
     "/users/login": {
       "post": {
+        "tags": [
+          "User auth"
+        ],
         "summary": "Authorization user in app.",
         "requestBody": {
           "content": {
@@ -137,6 +143,9 @@
     },
     "/users/verify": {
       "post": {
+        "tags": [
+          "User verify"
+        ],
         "summary": "Resend user verification email.",
         "requestBody": {
           "content": {
@@ -190,6 +199,9 @@
     },
     "/users/verify/{verificationToken}": {
       "get": {
+        "tags": [
+          "User verify"
+        ],
         "summary": "Verification user account by link from email",
         "parameters": [
           {
@@ -229,6 +241,9 @@
     },
     "/users/logout": {
       "get": {
+        "tags": [
+          "User auth"
+        ],
         "summary": "Logout current user",
         "responses": {
           "204": {
@@ -257,6 +272,9 @@
     },
     "/users/current": {
       "get": {
+        "tags": [
+          "User operation"
+        ],
         "summary": "Get current user",
         "responses": {
           "200": {
@@ -292,6 +310,9 @@
     },
     "/users": {
       "patch": {
+        "tags": [
+          "User operation"
+        ],
         "summary": "Change user subscription",
         "requestBody": {
           "content": {
@@ -347,6 +368,9 @@
     },
     "/users/avatars": {
       "patch": {
+        "tags": [
+          "User operation"
+        ],
         "summary": "Uploads a file.",
         "requestBody": {
           "content": {
@@ -404,6 +428,9 @@
     },
     "/contacts": {
       "get": {
+        "tags": [
+          "Contacts operation"
+        ],
         "summary": "Get all contacts",
         "parameters": [
           {
@@ -472,6 +499,9 @@
         ]
       },
       "post": {
+        "tags": [
+          "Contacts operation"
+        ],
         "summary": "Create new contact",
         "requestBody": {
           "content": {
@@ -527,6 +557,9 @@
     },
     "/contacts/{contactId}": {
       "get": {
+        "tags": [
+          "Contacts operation"
+        ],
         "summary": "Get contact by id",
         "parameters": [
           {
@@ -586,6 +619,9 @@
         ]
       },
       "put": {
+        "tags": [
+          "Contacts operation"
+        ],
         "summary": "Change contact fields",
         "parameters": [
           {
@@ -665,6 +701,9 @@
         ]
       },
       "delete": {
+        "tags": [
+          "Contacts operation"
+        ],
         "summary": "Delete contact by id",
         "parameters": [
           {
@@ -726,6 +765,9 @@
     },
     "/contacts/{contactId}/favorite": {
       "patch": {
+        "tags": [
+          "Contacts operation"
+        ],
         "summary": "Get contact by id",
         "parameters": [
           {
