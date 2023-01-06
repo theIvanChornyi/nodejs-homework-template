@@ -2,7 +2,7 @@ const sgMail = require('@sendgrid/mail');
 const createError = require('./createError');
 require('dotenv').config();
 
-const { SENDGRID_API_KEY, SENDLER } = process.env;
+const { SENDGRID_API_KEY, SENDLER, HOST } = process.env;
 sgMail.setApiKey(SENDGRID_API_KEY);
 
 async function sendVerivyMsg({ email, verificationToken }) {
@@ -10,7 +10,7 @@ async function sendVerivyMsg({ email, verificationToken }) {
     to: email,
     from: SENDLER,
     subject: 'Verify on Contacts',
-    html: `<span>If you want activate your acount click <a href="http://localhost:3000/api/users/verify/${verificationToken}"> Here!</a></span>`,
+    html: `<span>If you want activate your acount click <a href="${HOST}/api/users/verify/${verificationToken}"> Here!</a></span>`,
   };
 
   try {
